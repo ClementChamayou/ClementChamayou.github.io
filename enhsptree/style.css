@@ -1,0 +1,120 @@
+body {
+    font-family: Helvetica;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: rgb(242, 243, 250);
+    background-color: rgb(50, 55, 66);
+}
+
+h3 {
+    text-align: center;
+    margin: 10px;
+    font-size: 30px;
+}
+
+h5 {
+    text-align: center;
+    margin: 10px;
+    font-size: 30px;
+}
+
+.special {
+    color: red;
+}
+
+.boxWrapper {
+    display: inline-block;
+    width: 100%;
+    padding: 20px;
+    width: 97vw;
+    height: 85vh;
+}
+
+#treePanel {
+    border-radius: 20px;
+    background-color: rgb(242, 243, 250);
+    width: 100%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+
+#fullAssignmentPanel {
+    position: fixed;
+    right: -500px;
+    width: 30%;
+    height: 100%;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    transition: right 0.5s ease-in-out;
+    background-color: rgb(50, 55, 66);
+}
+
+table,
+th,
+td {
+    background-color: rgb(242, 243, 250);
+    color: rgb(50, 55, 66);
+}
+
+.selected {
+    fill: red;
+}
+
+#wrapper {
+    text-align: center;
+}
+
+#inputZone {
+    display: inline-block;
+    height: 3vh;
+
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.node text {
+    font: 10px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    width:100%;
+}
+
+table,
+th,
+td {
+    border: 1px solid black;
+}
+
+.table-container {
+    height: 60%;
+    overflow-y: scroll;
+    background-color: #fff;
+  }
+
+button {
+border: none;
+cursor: pointer;
+appearance: none;
+background-color: inherit;
+float: right;
+}
