@@ -27,7 +27,7 @@ h5 {
     width: 100%;
     padding: 20px;
     width: 97vw;
-    height: 85vh;
+    height: 76vh;
 }
 
 #treePanel {
@@ -66,8 +66,8 @@ td {
 }
 
 #inputZone {
-    display: inline-block;
-    height: 3vh;
+    position: absolute;
+    left: 42%;
 
 }
 
@@ -111,10 +111,22 @@ td {
     background-color: #fff;
   }
 
-button {
+.closePanelButton {
 border: none;
 cursor: pointer;
 appearance: none;
 background-color: inherit;
 float: right;
+}
+
+#treeInfo{
+    border: white;
+    border-radius: 20px;
+    background-color: rgb(83 91 108);
+    text-align: left;
+    width: fit-content;
+    padding: 6px;
+    margin-left: 30px;
+    display: inline-block;
+    float: left;
 }

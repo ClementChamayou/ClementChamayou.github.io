@@ -13,17 +13,31 @@
 <body>
     <h3>Search Space Tree Tool</h1>
     <div id="wrapper">
+            <div id="treeInfo">
+                <p>Width :
+                    <bold id="width"></bold>
+                </p>
+                <p>Height :
+                    <bold id="height"></bold>
+                </p>
+                <p>Average Branching factor :
+                    <bold id="averageBF"></bold>
+                </p>
+            </div>
         <div id="inputZone">
             <form>
                 <label for="fileInput">Select a .sp_log file:</label><br>
                 <input type="file" id="fileInput" accept=".sp_log">
             </form>
-        </div>
+            <button id="displayAllNodes" onclick="displayAllNodes()">Display all nodes</button>
+       </div>
+    </div>
+    </div>
         <div class="boxWrapper">
             <div id="treePanel">
             </div>
             <div id="fullAssignmentPanel">
-                <button onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button>
+                <button class="closePanelButton" onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button>
                 <h5>Full Assignment Panel</h5>
                 
                 <p>Distance :
@@ -40,6 +54,8 @@
                 </div>
             </div>
         </div>
+        
+    <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
     </div>
 </body>
 

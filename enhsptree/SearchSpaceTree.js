@@ -10,7 +10,7 @@ var treemap;
 var svg;
 var lastClicked;
 
-// Attend que le DOM soit chargé
+// Waiting for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 })
 
+
 function loadTree() {
     // Empty predicateTable
     var table = document.getElementById("predicateTable");
@@ -58,10 +59,55 @@ function loadTree() {
     root.x0 = height / 2;
     root.y0 = 0;
 
+    // Getting information about the tree
+    
+    var treeSpecs = treeInfo(root)
+    var width = document.getElementById("width")
+    width.innerHTML = treeSpecs[0]
+    var height = document.getElementById("height");
+    height.innerHTML = treeSpecs[1];
+    var averageBF = document.getElementById("averageBF");
+    averageBF.innerHTML = treeSpecs[2]
+    
+    
+    d3.select("g").attr("transform", "translate(" +
+    (d3.select("svg").node().getBoundingClientRect().width/2) + "," 
+    + (d3.select("svg").node().getBoundingClientRect().height/2) + ")");
+
     // Collapse after the second level
-    //root.children.forEach(collapse);
+    root.children.forEach(collapse);
 
     update(root);
+}
+
+
+//Returns the width, the height and the average branching factor of the tree
+function treeInfo(root) {
+
+    if (!root) return 0
+  
+    var currentLevel = [root]
+    var nextLevel = []
+    var width = 0
+    var totalLevels = 0
+    var n_nodes = 0
+
+    while (currentLevel.length > 0) {
+        totalLevels++
+        width = Math.max(width, currentLevel.length)
+        for (let i = 0; i < currentLevel.length; i++) {
+            let node = currentLevel[i]
+            n_nodes++
+            if (node.children) nextLevel = nextLevel.concat(node.children)
+        }
+        currentLevel = nextLevel
+        nextLevel = []
+    }
+
+    var averageBF = n_nodes/totalLevels
+    
+    return [width, root.height, Math.round(averageBF)]
+    
 }
 
 // Collapse the node and all it's children
@@ -70,6 +116,16 @@ function collapse(d) {
         d._children = d.children
         d._children.forEach(collapse)
         d.children = null
+    }
+}
+
+function uncollapse(d) {
+    if (d._children) {
+        d.children = d._children;
+        d._children = null;
+      }
+    if (d.children) {
+        d.children.forEach(uncollapse);
     }
 }
 
@@ -99,6 +155,14 @@ function update(source) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
         })
         .on("click", function(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+                } else {
+                d.children = d._children;
+                d._children = null;
+                }
+            update(d)
             d3.selectAll(".node").classed("selected", false);
             d3.select(this).classed("selected", true);
             //change all other nodes outline color
@@ -369,4 +433,9 @@ function parseData(data) {
         return dict;
     }
     return data;
+}
+
+function displayAllNodes(){
+    uncollapse(root)
+    update(root)
 }
