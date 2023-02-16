@@ -7,30 +7,80 @@ var i = 0,
     duration = 750,
     root;
 var treemap;
-var svg;
 var lastClicked;
+var svgbg;
+var svg;
+var zoom;
+var gElem;
+
+function resetZoom() {
+
+    var transform = d3.zoomIdentity;
+    //centers transform
+    transform.x = (d3.select("svg").node().getBoundingClientRect().width / 6);
+    transform.y = (d3.select("svg").node().getBoundingClientRect().height / 2);
+    //resets zoom
+    transform.k = 1;
+
+    svgbg.transition()
+        .duration(750)
+        .call(zoom.transform, transform);
+}
+
 
 // Waiting for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
-    svg = d3.select("#treePanel").append("svg")
+    // svg = d3.select("#treePanel").append("svg")
+    //     .attr("width", "100%")
+    //     .attr("height", "100%")
+    //     .call(d3.zoom().on("zoom", zoomed))
+    //     // .call(d3.zoom().on("zoom", function() {
+    //     //     //limit zoom
+    //     //     if (d3.event.transform.k > 5) {
+    //     //         d3.event.transform.k = 5;
+    //     //     } else if (d3.event.transform.k < 0.1) {
+    //     //         d3.event.transform.k = 0.1;
+    //     //     }
+    //     //     svg.attr("transform", d3.event.transform);
+    //     // }))
+    //     .append("g");
+
+    //.attr("transform", "translate(" +
+    //  margin.left + "," + margin.top + ")");
+    // declares a tree layout and assigns the size
+
+    function zoomed() {
+        //limit zoom
+        if (d3.event.transform.k > 5) {
+            d3.event.transform.k = 5;
+        } else if (d3.event.transform.k < 0.1) {
+            d3.event.transform.k = 0.1;
+        }
+        svg.attr("transform", d3.event.transform)
+    }
+
+    zoom = d3.zoom().on("zoom", zoomed);
+
+    svgbg = d3.select("#treePanel")
+        .append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
-        .call(d3.zoom().on("zoom", function() {
-            //limit zoom
-            if (d3.event.transform.k > 5) {
-                d3.event.transform.k = 5;
-            } else if (d3.event.transform.k < 0.1) {
-                d3.event.transform.k = 0.1;
-            }
-            svg.attr("transform", d3.event.transform);
-        }))
+        .call(zoom)
+
+    svg = svgbg
         .append("g")
-        //.attr("transform", "translate(" +
-        //  margin.left + "," + margin.top + ")");
-        // declares a tree layout and assigns the size
+
+    //reset zoom if p is pressed
+    document.addEventListener('keydown', function(event) {
+        if (event.key == 'p') {
+            resetZoom();
+        }
+    });
+
+
     treemap = d3.tree().nodeSize([25, 25]);
 
     // Select the file input element
@@ -48,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
 })
 
-
 function loadTree() {
     // Empty predicateTable
     var table = document.getElementById("predicateTable");
@@ -60,7 +109,7 @@ function loadTree() {
     root.y0 = 0;
 
     // Getting information about the tree
-    
+
     var treeSpecs = treeInfo(root)
     var width = document.getElementById("width")
     width.innerHTML = treeSpecs[0]
@@ -68,11 +117,8 @@ function loadTree() {
     height.innerHTML = treeSpecs[1];
     var averageBF = document.getElementById("averageBF");
     averageBF.innerHTML = treeSpecs[2]
-    
-    
-    d3.select("g").attr("transform", "translate(" +
-    (d3.select("svg").node().getBoundingClientRect().width/2) + "," 
-    + (d3.select("svg").node().getBoundingClientRect().height/2) + ")");
+
+    resetZoom();
 
     // Collapse after the second level
     root.children.forEach(collapse);
@@ -85,7 +131,7 @@ function loadTree() {
 function treeInfo(root) {
 
     if (!root) return 0
-  
+
     var currentLevel = [root]
     var nextLevel = []
     var width = 0
@@ -104,10 +150,10 @@ function treeInfo(root) {
         nextLevel = []
     }
 
-    var averageBF = n_nodes/totalLevels
-    
+    var averageBF = n_nodes / totalLevels
+
     return [width, root.height, Math.round(averageBF)]
-    
+
 }
 
 // Collapse the node and all it's children
@@ -123,7 +169,7 @@ function uncollapse(d) {
     if (d._children) {
         d.children = d._children;
         d._children = null;
-      }
+    }
     if (d.children) {
         d.children.forEach(uncollapse);
     }
@@ -158,10 +204,10 @@ function update(source) {
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
-                } else {
+            } else {
                 d.children = d._children;
                 d._children = null;
-                }
+            }
             update(d)
             d3.selectAll(".node").classed("selected", false);
             d3.select(this).classed("selected", true);
@@ -177,7 +223,12 @@ function update(source) {
                 .style("stroke", "red")
                 .style("stroke-width", "4px");
             click(d);
-
+            d3.select(this).select("text").text(function(d) {
+                    return d._children ? "↪" : d.children ? "↩" : "";
+                })
+                .attr("fill", function(d) {
+                    return d._children ? "black" : d.children ? "#4682B4" : "black";
+                });
         })
         .on("mouseover", function(d) {
             //change size timed
@@ -201,6 +252,16 @@ function update(source) {
             return d._children ? "lightsteelblue" : "#fff";
         });
 
+    // If node has children
+    nodeEnter.append('text')
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+            return d._children ? "↪" : d.children ? "↩" : "";
+        })
+        .attr("fill", function(d) {
+            return d._children ? "black" : d.children ? "#4682B4" : "black";
+        });
 
     // Add labels for the nodes
     nodeEnter.append('text')
@@ -378,8 +439,7 @@ function update(source) {
     }
 }
 
-function closePanel()
-{
+function closePanel() {
     const fullAssignmentPanel = document.getElementById("fullAssignmentPanel");
     fullAssignmentPanel.style.right = "-500px";
     lastClicked = null;
@@ -397,9 +457,9 @@ function fillpredicateTable(data, parentData = null) {
             //keep only 2 digits after .
             var indexOfDot = data[element].indexOf(".");
             if (indexOfDot == -1) {
-                row.insertCell(-1).innerHTML = "<b>"+ parentData[element] + " => <span style=\"color: red;\">"+ data[element] + "</span></b>";
+                row.insertCell(-1).innerHTML = "<b>" + parentData[element] + " => <span style=\"color: red;\">" + data[element] + "</span></b>";
             } else {
-                row.insertCell(-1).innerHTML = "<b>"+ parentData[element].substring(0, indexOfDot + 3) + " => <span style=\"color: red;\">" + data[element].substring(0, indexOfDot + 3) + "</span></b>";
+                row.insertCell(-1).innerHTML = "<b>" + parentData[element].substring(0, indexOfDot + 3) + " => <span style=\"color: red;\">" + data[element].substring(0, indexOfDot + 3) + "</span></b>";
             }
         } else {
             row.insertCell(-1).innerHTML = element;
@@ -435,7 +495,7 @@ function parseData(data) {
     return data;
 }
 
-function displayAllNodes(){
+function displayAllNodes() {
     uncollapse(root)
     update(root)
 }

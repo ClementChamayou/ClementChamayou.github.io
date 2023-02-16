@@ -12,7 +12,7 @@
 
 <body>
     <h3>Search Space Tree Tool</h1>
-    <div id="wrapper">
+        <div id="wrapper">
             <div id="treeInfo">
                 <p>Width :
                     <bold id="width"></bold>
@@ -24,22 +24,23 @@
                     <bold id="averageBF"></bold>
                 </p>
             </div>
-        <div id="inputZone">
-            <form>
-                <label for="fileInput">Select a .sp_log file:</label><br>
-                <input type="file" id="fileInput" accept=".sp_log">
-            </form>
-            <button id="displayAllNodes" onclick="displayAllNodes()">Display all nodes</button>
-       </div>
-    </div>
-    </div>
+            <div id="inputZone">
+                <form>
+                    <label for="fileInput">Select a .sp_log file:</label><br>
+                    <input type="file" id="fileInput" accept=".sp_log">
+                </form>
+                <button id="displayAllNodes" onclick="displayAllNodes()">Display all nodes</button>
+            </div>
+        </div>
+        </div>
         <div class="boxWrapper">
             <div id="treePanel">
             </div>
             <div id="fullAssignmentPanel">
-                <button class="closePanelButton" onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button>
+                <!-- <button class="closePanelButton" onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button> -->
+                <button class="closePanelButton" onclick="closePanel()" style="color:white; font-size: 2em;">🞭</button>
                 <h5>Full Assignment Panel</h5>
-                
+
                 <p>Distance :
                     <bold id="distance"></bold>
                 </p>
@@ -54,9 +55,9 @@
                 </div>
             </div>
         </div>
-        
-    <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
-    </div>
+
+        <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
+        </div>
 </body>
 
 </html>
