@@ -14,54 +14,30 @@ var zoom;
 var gElem;
 
 function resetZoom() {
-
     var transform = d3.zoomIdentity;
     //centers transform
-    transform.x = (d3.select("svg").node().getBoundingClientRect().width / 6);
+    transform.x = (d3.select("svg").node().getBoundingClientRect().width / 3);
     transform.y = (d3.select("svg").node().getBoundingClientRect().height / 2);
-    //resets zoom
-    transform.k = 1;
+
+    transform.k = 2;
 
     svgbg.transition()
         .duration(750)
         .call(zoom.transform, transform);
 }
 
+function zoomed() {
+    //limit zoom
+    if (d3.event.transform.k > 5) {
+        d3.event.transform.k = 5;
+    } else if (d3.event.transform.k < 0.1) {
+        d3.event.transform.k = 0.1;
+    }
+    svg.attr("transform", d3.event.transform)
+}
 
 // Waiting for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
-    // append the svg object to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
-    // svg = d3.select("#treePanel").append("svg")
-    //     .attr("width", "100%")
-    //     .attr("height", "100%")
-    //     .call(d3.zoom().on("zoom", zoomed))
-    //     // .call(d3.zoom().on("zoom", function() {
-    //     //     //limit zoom
-    //     //     if (d3.event.transform.k > 5) {
-    //     //         d3.event.transform.k = 5;
-    //     //     } else if (d3.event.transform.k < 0.1) {
-    //     //         d3.event.transform.k = 0.1;
-    //     //     }
-    //     //     svg.attr("transform", d3.event.transform);
-    //     // }))
-    //     .append("g");
-
-    //.attr("transform", "translate(" +
-    //  margin.left + "," + margin.top + ")");
-    // declares a tree layout and assigns the size
-
-    function zoomed() {
-        //limit zoom
-        if (d3.event.transform.k > 5) {
-            d3.event.transform.k = 5;
-        } else if (d3.event.transform.k < 0.1) {
-            d3.event.transform.k = 0.1;
-        }
-        svg.attr("transform", d3.event.transform)
-    }
-
     zoom = d3.zoom().on("zoom", zoomed);
 
     svgbg = d3.select("#treePanel")
@@ -72,14 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     svg = svgbg
         .append("g")
-
-    //reset zoom if p is pressed
-    document.addEventListener('keydown', function(event) {
-        if (event.key == 'p') {
-            resetZoom();
-        }
-    });
-
 
     treemap = d3.tree().nodeSize([25, 25]);
 
@@ -95,6 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             fr.readAsText(this.files[0]);
+
+            var appBanners = document.getElementsByClassName('hideUntilLoad');
+            console.log(appBanners.length);
+            for (var i = 0; i < appBanners.length; i++) {
+                appBanners[i].style.visibility = 'visible';
+            }
         })
 })
 
@@ -119,6 +93,7 @@ function loadTree() {
     averageBF.innerHTML = treeSpecs[2]
 
     resetZoom();
+    closePanel();
 
     // Collapse after the second level
     root.children.forEach(collapse);
@@ -215,19 +190,19 @@ function update(source) {
             d3.selectAll(".node").select('circle.node')
                 .style("stroke", function(dd) {
                     //black if visited
-                    return dd.data.visited ? "black" : "#4682B4";
+                    return dd.data.visited ? "black" : "#1B65B6";
                 })
-                .style("stroke-width", "2px");
+                .style("stroke-width", "1.5px");
             //change node outline color and border thickness animation
             d3.select(this).select('circle.node')
                 .style("stroke", "red")
-                .style("stroke-width", "4px");
+                .style("stroke-width", "3px");
             click(d);
             d3.select(this).select("text").text(function(d) {
                     return d._children ? "↪" : d.children ? "↩" : "";
                 })
                 .attr("fill", function(d) {
-                    return d._children ? "black" : d.children ? "#4682B4" : "black";
+                    return d._children ? "black" : d.children ? "#1B65B6" : "black";
                 });
         })
         .on("mouseover", function(d) {
@@ -260,13 +235,14 @@ function update(source) {
             return d._children ? "↪" : d.children ? "↩" : "";
         })
         .attr("fill", function(d) {
-            return d._children ? "black" : d.children ? "#4682B4" : "black";
+            return d._children ? "black" : d.children ? "#1B65B6" : "black";
         });
 
     // Add labels for the nodes
     nodeEnter.append('text')
-        .attr("dy", ".35em")
-        .attr("x", -15)
+        // .attr("dy", ".35em")
+        .attr("dy", "-.35em")
+        .attr("x", -12)
         .attr("text-anchor", "end")
         .text(function(d) {
             var text = d.data.visit_step;
@@ -320,7 +296,7 @@ function update(source) {
         //outline
         .style("stroke", function(d) {
             //black if visited
-            return d.data.visited ? "black" : "#4682B4";
+            return d.data.visited ? "black" : "#1B65B6";
         })
         .style("fill", function(d) {
             //fill if visited
@@ -361,10 +337,10 @@ function update(source) {
 
     // Make link thicker and darker if visited
     linkEnter.style("stroke", function(d) {
-            return d.data.visited ? "#4682B4" : "#999";
+            return d.data.visited ? "#1B65B6" : "#777";
         })
         .style("stroke-width", function(d) {
-            return d.data.visited ? "3px" : "1px";
+            return d.data.visited ? "2.5px" : "1px";
         });
 
 
@@ -428,20 +404,20 @@ function update(source) {
             fillpredicateTable(nodeData.state, parentData.state);
         }
 
-        const fullAssignmentPanel = document.getElementById("fullAssignmentPanel");
+        const fullAssignmentPanel = document.getElementById("sliderPanel");
         if (lastClicked === d) {
-            fullAssignmentPanel.style.right = "-500px";
+            fullAssignmentPanel.style.bottom = "-65%";
             lastClicked = null;
         } else {
-            fullAssignmentPanel.style.right = "15px";
+            fullAssignmentPanel.style.bottom = "20px";
             lastClicked = d;
         }
     }
 }
 
 function closePanel() {
-    const fullAssignmentPanel = document.getElementById("fullAssignmentPanel");
-    fullAssignmentPanel.style.right = "-500px";
+    const fullAssignmentPanel = document.getElementById("sliderPanel");
+    fullAssignmentPanel.style.bottom = "-65%";
     lastClicked = null;
 }
 

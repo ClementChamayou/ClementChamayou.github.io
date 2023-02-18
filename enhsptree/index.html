@@ -11,53 +11,53 @@
 </head>
 
 <body>
-    <h3>Search Space Tree Tool</h1>
-        <div id="wrapper">
-            <div id="treeInfo">
-                <p>Width :
-                    <bold id="width"></bold>
-                </p>
-                <p>Height :
-                    <bold id="height"></bold>
-                </p>
-                <p>Average Branching factor :
-                    <bold id="averageBF"></bold>
-                </p>
-            </div>
-            <div id="inputZone">
-                <form>
-                    <label for="fileInput">Select a .sp_log file:</label><br>
-                    <input type="file" id="fileInput" accept=".sp_log">
-                </form>
-                <button id="displayAllNodes" onclick="displayAllNodes()">Display all nodes</button>
-            </div>
+    <input type="file" style="visibility:hidden;" id="fileInput" accept=".sp_log">
+    <div id="wrapper">
+        <div id="treeInfo" class="info info2 hideUntilLoad">
+            <p>
+                <bold id="width" class="treeInfoNumber"></bold> - Tree Width</p>
+            <p>
+                <bold id="height" class="treeInfoNumber"></bold> - Tree Height</p>
+            <p>
+                <bold id="averageBF" class="treeInfoNumber"></bold> - Average Branching Factor</p>
         </div>
+        <div id="inputZone">
+            <label for="fileInput" class="btn inputbtn">Load .sp_log file</label>
+            <button id="displayAllNodes" onclick="displayAllNodes()" class="btn hideUntilLoad">Unfold all nodes</button>
+            <button id="displayAllNodes" onclick="resetZoom()" class="btn hideUntilLoad">Reset view/zoom</button>
         </div>
-        <div class="boxWrapper">
-            <div id="treePanel">
-            </div>
+    </div>
+    </div>
+    <div class="boxWrapper">
+        <div id="treePanel">
+        </div>
+        <div id="sliderPanel">
+            <button class="closePanelButton btn" onclick="closePanel()">🡇 Close Tab</button>
             <div id="fullAssignmentPanel">
                 <!-- <button class="closePanelButton" onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button> -->
-                <button class="closePanelButton" onclick="closePanel()" style="color:white; font-size: 2em;">🞭</button>
-                <h5>Full Assignment Panel</h5>
 
-                <p>Distance :
-                    <bold id="distance"></bold>
-                </p>
-                <p>Action :
-                    <bold id="action"></bold>
-                </p>
-                <p>Action cost :
-                    <bold id="actionCost"></bold>
-                </p>
-                <div class="table-container">
+                <!-- <h5>Full Assignment Panel</h5> -->
+                <div class="properties-container info info2">
+                    <p>Distance :
+                        <bold id="distance" class="AssignmentPanelNumber"></bold>
+                    </p>
+                    <p>Action :
+                        <bold id="action" class="AssignmentPanelNumber"></bold>
+                    </p>
+                    <p>Action cost :
+                        <bold id="actionCost" class="AssignmentPanelNumber"></bold>
+                    </p>
+                </div>
+                <!-- <hr> -->
+                <div class="table-container info">
                     <table id="predicateTable"></table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
-        </div>
+    <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
+    </div>
 </body>
 
 </html>
