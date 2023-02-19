@@ -13,6 +13,7 @@ var svg;
 var zoom;
 var gElem;
 
+// Put the root node back in the center of the screen
 function resetZoom() {
     var transform = d3.zoomIdentity;
     //centers transform
@@ -82,7 +83,7 @@ function loadTree() {
     root.x0 = height / 2;
     root.y0 = 0;
 
-    // Getting information about the tree
+    // Getting and displaying information about the tree
 
     var treeSpecs = treeInfo(root)
     var width = document.getElementById("width")
@@ -140,6 +141,7 @@ function collapse(d) {
     }
 }
 
+// Expand all nodes to see the full tree
 function uncollapse(d) {
     if (d._children) {
         d.children = d._children;
@@ -265,12 +267,6 @@ function update(source) {
     nodeEnter.append('text')
         .attr("dy", ".95em")
         .attr("x", 15)
-        // .attr("x", function(d) {
-        //     return d.children || d._children ? -15 : 15;
-        // })
-        // .attr("text-anchor", function(d) {
-        //     return d.children || d._children ? "end" : "start";
-        // })
         .text(function(d) {
             var text = "";
             if (d.data.action != null) {
@@ -380,11 +376,12 @@ function update(source) {
         return path
     }
 
-    // Toggle children on click.
+    // Toggle children on click and open the predicate table
     function click(d) {
-        //update(d);
+        
         var parentData = null;
         var nodeData = d.data;
+
         if (d.parent != null) {
             parentData = d.parent.data;
         }
@@ -415,13 +412,17 @@ function update(source) {
     }
 }
 
+// Close the the assignment panel
 function closePanel() {
     const fullAssignmentPanel = document.getElementById("sliderPanel");
     fullAssignmentPanel.style.bottom = "-65%";
     lastClicked = null;
 }
 
+// Fill the predicate table and showing data that had changed compared to the parent node
 function fillpredicateTable(data, parentData = null) {
+
+    //Emptying the table
     var table = document.getElementById("predicateTable");
     table.innerHTML = "";
 
@@ -450,6 +451,7 @@ function fillpredicateTable(data, parentData = null) {
     });
 }
 
+// Retrieve data present in the "state" variable of the node and order it in a dictionnary
 function parseData(data) {
     if (typeof data === 'string' || data instanceof String) {
         var dict = {};
