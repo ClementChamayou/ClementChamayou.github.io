@@ -26,6 +26,9 @@
             <button id="displayAllNodes" onclick="displayAllNodes()" class="btn hideUntilLoad">Unfold all nodes</button>
             <button id="displayAllNodes" onclick="resetZoom()" class="btn hideUntilLoad">Reset view/zoom</button>
         </div>
+        <div id="inputZone2" class="hideAfterLoad">
+            <a href="https://sites.google.com/view/enhsp/" target="_blank" class="">No log files? Download ENHSP</a>
+        </div>
     </div>
     </div>
     <div class="boxWrapper">
@@ -34,9 +37,6 @@
         <div id="sliderPanel">
             <button class="closePanelButton btn" onclick="closePanel()">🡇 Close Tab</button>
             <div id="fullAssignmentPanel">
-                <!-- <button class="closePanelButton" onclick="closePanel()"><img src="whiteCross.png" width="15" height="15"></button> -->
-
-                <!-- <h5>Full Assignment Panel</h5> -->
                 <div class="properties-container info info2">
                     <p>Distance :
                         <bold id="distance" class="AssignmentPanelNumber"></bold>
@@ -48,15 +48,12 @@
                         <bold id="actionCost" class="AssignmentPanelNumber"></bold>
                     </p>
                 </div>
-                <!-- <hr> -->
                 <div class="table-container info">
                     <table id="predicateTable"></table>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- <button onclick="displayAllNodes()">Display all nodes</button> -->
     </div>
 </body>
 

@@ -89,6 +89,23 @@ td {
     top: 20px;
 }
 
+#inputZone2 {
+    font-size: 8px;
+    position: absolute;
+    left: 20px;
+    top: 60px;
+    width: 180px;
+    margin: 3px;
+    padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+    text-align: center;
+}
+
+a,
+a:link,
+a:visited {
+    color: #818181;
+}
+
 .node {
     cursor: pointer;
 }

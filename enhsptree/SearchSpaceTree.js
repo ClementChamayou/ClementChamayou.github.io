@@ -27,6 +27,7 @@ function resetZoom() {
         .call(zoom.transform, transform);
 }
 
+// Zoom event
 function zoomed() {
     //limit zoom
     if (d3.event.transform.k > 5) {
@@ -66,9 +67,13 @@ document.addEventListener('DOMContentLoaded', function() {
             fr.readAsText(this.files[0]);
 
             var appBanners = document.getElementsByClassName('hideUntilLoad');
-            console.log(appBanners.length);
             for (var i = 0; i < appBanners.length; i++) {
                 appBanners[i].style.visibility = 'visible';
+            }
+
+            var appBanners = document.getElementsByClassName('hideAfterLoad');
+            for (var i = 0; i < appBanners.length; i++) {
+                appBanners[i].style.visibility = 'hidden';
             }
         })
 })
@@ -95,11 +100,7 @@ function loadTree() {
 
     resetZoom();
     closePanel();
-
-    // Collapse after the second level
-    root.children.forEach(collapse);
-
-    update(root);
+    foldAllNodes();
 }
 
 
@@ -132,20 +133,30 @@ function treeInfo(root) {
 
 }
 
+// Unfold only one node
+function unfold(d) {
+    d.children = d._children;
+    d._children = null;
+}
+
+// Fold only one node
+function fold(d) {
+    d._children = d.children;
+    d.children = null;
+}
+
 // Collapse the node and all it's children
 function collapse(d) {
     if (d.children) {
-        d._children = d.children
+        fold(d);
         d._children.forEach(collapse)
-        d.children = null
     }
 }
 
 // Expand all nodes to see the full tree
 function uncollapse(d) {
     if (d._children) {
-        d.children = d._children;
-        d._children = null;
+        unfold(d);
     }
     if (d.children) {
         d.children.forEach(uncollapse);
@@ -175,15 +186,15 @@ function update(source) {
     var nodeEnter = node.enter().append('g')
         .attr('class', 'node')
         .attr("transform", function(d) {
-            return "translate(" + source.y0 + "," + source.x0 + ")";
+            posX0 = isNaN(source.x0) ? 0 : source.x0;
+            posY0 = isNaN(source.y0) ? 0 : source.y0;
+            return "translate(" + posY0 + "," + posX0 + ")";
         })
         .on("click", function(d) {
             if (d.children) {
-                d._children = d.children;
-                d.children = null;
+                fold(d);
             } else {
-                d.children = d._children;
-                d._children = null;
+                unfold(d);
             }
             update(d)
             d3.selectAll(".node").classed("selected", false);
@@ -378,7 +389,7 @@ function update(source) {
 
     // Toggle children on click and open the predicate table
     function click(d) {
-        
+
         var parentData = null;
         var nodeData = d.data;
 
@@ -475,5 +486,10 @@ function parseData(data) {
 
 function displayAllNodes() {
     uncollapse(root)
+    update(root)
+}
+
+function foldAllNodes() {
+    root.children.forEach(collapse);
     update(root)
 }
