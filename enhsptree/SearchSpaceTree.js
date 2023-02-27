@@ -412,12 +412,12 @@ function update(source) {
             fillpredicateTable(nodeData.state, parentData.state);
         }
 
-        const fullAssignmentPanel = document.getElementById("sliderPanel");
+        const sliderPanel = document.getElementById("sliderPanel");
         if (lastClicked === d) {
-            fullAssignmentPanel.style.bottom = "-65%";
+            sliderPanel.style.bottom = "-65%";
             lastClicked = null;
         } else {
-            fullAssignmentPanel.style.bottom = "20px";
+            sliderPanel.style.bottom = "20px";
             lastClicked = d;
         }
     }
