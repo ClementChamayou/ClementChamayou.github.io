@@ -207,6 +207,7 @@ table tr:nth-child(even) td {
     -webkit-user-select: none;
     touch-action: manipulation;
     width: 180px;
+    z-index: 1;
 }
 
 .btn:hover,
@@ -236,4 +237,46 @@ table tr:nth-child(even) td {
 .inputbtn:hover {
     background-color: #B0C4DE !important;
     color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.actionbtn {
+    width: 50px !important;
+}
+
+.actionbtn:hover+#actionText {
+    color: rgb(50, 55, 66, 255) !important;
+}
+
+#actionText {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    color: rgb(50, 55, 66, 0) !important;
+    vertical-align: middle;
+    /* display: none; */
+    display: inline-block;
+    transition: all 250ms;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+}
+
+.collapseBtn {
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 190px;
+    transition: all 250ms;
+    z-index: 0 !important;
+}
+
+#displayAllNodes:hover~.collapseBtn,
+.collapseBtn:hover {
+    display: inline-block;
+    top: 50px;
 }

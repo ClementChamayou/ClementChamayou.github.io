@@ -15,9 +15,13 @@
     <input type="file" style="visibility:hidden;" id="fileInput" accept=".sp_log">
     <div id="inputZone">
         <label for="fileInput" class="btn ui-style inputbtn">Load .sp_log file</label>
-        <button id="displayAllNodes" onclick="displayAllNodes()" class="btn ui-style hideUntilLoad">Unfold all nodes</button>
-        <button id="displayAllNodes" onclick="resetZoom()" class="btn ui-style hideUntilLoad">Reset view/zoom</button>
+        <button id="displayAllNodes" onclick="displayAllNodes()" class="btn ui-style hideUntilLoad">Expand all nodes</button>
+        <button id="collapseAllNodes" onclick="foldAllNodes()" class="btn ui-style collapseBtn hideUntilLoad">Collapse all nodes</button>
+        <button id="rstZoom" onclick="resetZoom()" class="btn ui-style hideUntilLoad">Reset view/zoom</button>
+        <button id="toggleActions" onclick="toggleReversedActions()" class="btn actionbtn ui-style hideUntilLoad">⭯</button>
+        <p id="actionText"><b>Node Properties: </b>Left Click<br><b>Expand Node: </b>Right Click/Shift+Left Click</p>
     </div>
+
     <div id="inputZone2" class="hideAfterLoad">
         <a href="https://sites.google.com/view/enhsp/" target="_blank" class="">No log files? Download ENHSP</a>
     </div>

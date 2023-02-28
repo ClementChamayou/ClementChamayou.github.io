@@ -12,6 +12,7 @@ var svgbg;
 var svg;
 var zoom;
 var gElem;
+var reversedActions = false;
 
 // Put the root node back in the center of the screen
 function resetZoom() {
@@ -47,6 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .attr("width", "100%")
         .attr("height", "100%")
         .call(zoom)
+        .on("dblclick.zoom", null)
+        .on("contextmenu", function(d, i) {
+            d3.event.preventDefault();
+            // react on right-clicking
+        });
 
     svg = svgbg
         .append("g")
@@ -190,33 +196,18 @@ function update(source) {
             posY0 = isNaN(source.y0) ? 0 : source.y0;
             return "translate(" + posY0 + "," + posX0 + ")";
         })
+        .on("contextmenu", function(d) {
+            d3.event.preventDefault();
+            // react on right-clicking
+            action(this, d, true);
+        })
         .on("click", function(d) {
-            if (d.children) {
-                fold(d);
+            //if shift key is pressed, is action2
+            if (d3.event.shiftKey) {
+                action(this, d, true);
             } else {
-                unfold(d);
+                action(this, d, false);
             }
-            update(d)
-            d3.selectAll(".node").classed("selected", false);
-            d3.select(this).classed("selected", true);
-            //change all other nodes outline color
-            d3.selectAll(".node").select('circle.node')
-                .style("stroke", function(dd) {
-                    //black if visited
-                    return dd.data.visited ? "black" : "#1B65B6";
-                })
-                .style("stroke-width", "1.5px");
-            //change node outline color and border thickness animation
-            d3.select(this).select('circle.node')
-                .style("stroke", "red")
-                .style("stroke-width", "3px");
-            click(d);
-            d3.select(this).select("text").text(function(d) {
-                    return d._children ? "↪" : d.children ? "↩" : "";
-                })
-                .attr("fill", function(d) {
-                    return d._children ? "black" : d.children ? "#1B65B6" : "black";
-                });
         })
         .on("mouseover", function(d) {
             //change size timed
@@ -387,8 +378,41 @@ function update(source) {
         return path
     }
 
-    // Toggle children on click and open the predicate table
-    function click(d) {
+    // Node pressed action
+    function action(focus, d, action2 = false) {
+        if ((!reversedActions && !action2) || (reversedActions && action2)) {
+            propertiesPanel(d);
+            d3.selectAll(".node").classed("selected", false);
+            d3.select(focus).classed("selected", true);
+            //change all other nodes outline color
+            d3.selectAll(".node").select('circle.node')
+                .style("stroke", function(dd) {
+                    //black if visited
+                    return dd.data.visited ? "black" : "#1B65B6";
+                })
+                .style("stroke-width", "1.5px");
+            //change node outline color and border thickness animation
+            d3.select(focus).select('circle.node')
+                .style("stroke", "red")
+                .style("stroke-width", "3px");
+        } else {
+            if (d.children) {
+                fold(d);
+            } else {
+                unfold(d);
+            }
+            d3.select(focus).select("text").text(function(d) {
+                    return d._children ? "↪" : d.children ? "↩" : "";
+                })
+                .attr("fill", function(d) {
+                    return d._children ? "black" : d.children ? "#1B65B6" : "black";
+                });
+            update(d);
+        }
+    }
+
+    // Open the predicate table
+    function propertiesPanel(d) {
 
         var parentData = null;
         var nodeData = d.data;
@@ -492,4 +516,29 @@ function displayAllNodes() {
 function foldAllNodes() {
     root.children.forEach(collapse);
     update(root)
+}
+
+function toggleReversedActions() {
+    reversedActions = !reversedActions;
+    //get id actionText
+    var actionText = document.getElementById("actionText");
+    if (reversedActions) {
+        actionText.innerHTML = "<b>Node Properties: </b>Right Click/Shift+Left Click<br><b>Expand Node: </b>Left Click";
+    } else {
+        actionText.innerHTML = "<b>Node Properties: </b>Left Click<br><b>Expand Node: </b>Right Click/Shift+Left Click";
+    }
+
+    //get class actionbtn
+    var actionbtn = document.getElementsByClassName("actionbtn");
+    if (reversedActions) {
+        //set background color
+        actionbtn[0].style.backgroundColor = "#1B65B6";
+        //set text color
+        actionbtn[0].style.color = "#FFFFFF";
+    } else {
+        //set background color
+        actionbtn[0].style.backgroundColor = "#FFFFFF";
+        //set text color
+        actionbtn[0].style.color = "#222222";
+    }
 }
