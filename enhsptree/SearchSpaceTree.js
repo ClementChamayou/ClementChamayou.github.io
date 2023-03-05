@@ -252,7 +252,8 @@ function update(source) {
             var text = d.data.visit_step;
             return text;
         });
-
+    
+    // Add label fo the action done at this node if it's part of the problem's solution (first half of the action)
     nodeEnter.append('text')
         .attr("dy", "-.25em")
         .attr("x", 15)
@@ -265,7 +266,7 @@ function update(source) {
             }
             return text;
         });
-
+    // Second half
     nodeEnter.append('text')
         .attr("dy", ".95em")
         .attr("x", 15)
