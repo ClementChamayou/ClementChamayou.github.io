@@ -13,6 +13,7 @@ var svg;
 var zoom;
 var gElem;
 var reversedActions = false;
+var planPath;
 
 // Put the root node back in the center of the screen
 function resetZoom() {
@@ -104,6 +105,9 @@ function loadTree() {
     var averageBF = document.getElementById("averageBF");
     averageBF.innerHTML = treeSpecs[2]
 
+    // Get the main plan path for the problem
+    planPath = getPlanPath(getLastVisitedNode());
+
     resetZoom();
     closePanel();
     foldAllNodes();
@@ -135,7 +139,7 @@ function treeInfo(root) {
 
     var averageBF = n_nodes / totalLevels
 
-    return [width, root.height, Math.round(averageBF)]
+    return [width, root.height, Math.round(averageBF * 10) / 10]
 
 }
 
@@ -169,6 +173,35 @@ function uncollapse(d) {
     }
 }
 
+// Function to find the node with the highest visited step
+function getLastVisitedNode() {
+    //get all nodes and put them in a list
+    var nodesList = treemap(root).descendants();
+
+    //sort list by visit_step
+    nodesList.sort(function(a, b) {
+        return a.data.visit_step - b.data.visit_step;
+    });
+
+    //get the node with the highest visit_step
+    var lastNode = nodesList[nodesList.length - 1];
+
+    //return this node
+    return lastNode;
+}
+
+// Function to return the path to the last visited node
+function getPlanPath(lastNode) {
+    //work our way up from the last visited node
+    var path = [];
+    var node = lastNode;
+    while (node.parent) {
+        path.unshift(node);
+        node = node.parent;
+    }
+    return path;
+}
+
 function update(source) {
 
     // Assigns the x and y position for the nodes
@@ -180,6 +213,8 @@ function update(source) {
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) { d.y = d.depth * 180 });
+
+
 
     // ****************** Nodes section ***************************
 
@@ -334,12 +369,26 @@ function update(source) {
             return diagonal(o, o)
         });
 
-    // Make link thicker and darker if visited
+    // Make link thicker and darker if visited, colored if in planPath
     linkEnter.style("stroke", function(d) {
-            return d.data.visited ? "#1B65B6" : "#777";
+            //if d is in planPath
+            if (planPath.includes(d)) {
+                return "#1B65B6";
+            } else if (d.data.visited) {
+                return "#444";
+            } else {
+                return "#777";
+            }
         })
         .style("stroke-width", function(d) {
-            return d.data.visited ? "2.5px" : "1px";
+            //if d is in planPath
+            if (planPath.includes(d)) {
+                return "3px";
+            } else if (d.data.visited) {
+                return "2px";
+            } else {
+                return "1px";
+            }
         });
 
 
