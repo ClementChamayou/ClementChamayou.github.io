@@ -13,7 +13,7 @@ var svg;
 var zoom;
 var gElem;
 var reversedActions = false;
-var planPath;
+var solutionNode, planPath;
 
 // Put the root node back in the center of the screen
 function resetZoom() {
@@ -106,7 +106,8 @@ function loadTree() {
     averageBF.innerHTML = treeSpecs[2]
 
     // Get the main plan path for the problem
-    planPath = getPlanPath(getLastVisitedNode());
+    solutionNode = getLastVisitedNode();
+    planPath = getPlanPath(solutionNode);
 
     resetZoom();
     closePanel();
@@ -591,4 +592,32 @@ function toggleReversedActions() {
         //set text color
         actionbtn[0].style.color = "#222222";
     }
+}
+
+function focusLastNode() {
+    displayAllNodes();
+
+    // Put the root node back in the center of the screen
+    var transform = d3.zoomIdentity;
+
+    // Set focus position
+    var pos = findNodePosition(solutionNode);
+    transform.x = (d3.select("svg").node().getBoundingClientRect().width / 2) - pos[1];
+    transform.y = (d3.select("svg").node().getBoundingClientRect().height / 2) - pos[0];
+
+    // Reset zoom
+    transform.k = 2;
+
+    svgbg.transition()
+        .duration(750)
+        .call(zoom.transform, transform);
+}
+
+//function to find node position in canvas
+function findNodePosition(node) {
+    var transform = d3.zoomTransform(svg.node());
+    //accounts for zoom (default) = 2
+    var x = node.x * 2;
+    var y = node.y * 2;
+    return [x, y];
 }

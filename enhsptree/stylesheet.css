@@ -270,13 +270,30 @@ table tr:nth-child(even) td {
     display: block;
     position: absolute;
     top: 0px;
-    left: 190px;
+    left: 189.5px;
     transition: all 250ms;
     z-index: 0 !important;
+    font-size: 14px !important;
 }
 
 #displayAllNodes:hover~.collapseBtn,
 .collapseBtn:hover {
+    display: inline-block;
+    top: 50px;
+}
+
+.lastNodeBtn {
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 378.5px;
+    transition: all 250ms;
+    z-index: 0 !important;
+    font-size: 14px !important;
+}
+
+#rstZoom:hover~.lastNodeBtn,
+.lastNodeBtn:hover {
     display: inline-block;
     top: 50px;
 }
